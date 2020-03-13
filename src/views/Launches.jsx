@@ -11,7 +11,7 @@ class LaunchesView extends Component {
   }
 
   state = {
-    isLaunchInfoOpen: false
+    isLaunchInfoOpen: true
   };
 
   componentDidMount() {
@@ -27,7 +27,6 @@ class LaunchesView extends Component {
       this.setState({
         isLaunchInfoOpen: !this.state.isLaunchInfoOpen
       });
-      this.toggleLaunchInfo();
 
       return;
     }
@@ -49,17 +48,16 @@ class LaunchesView extends Component {
       return <div> NO DATA </div>;
     }
 
-    const launches = launchCollection.launches.map(launchSummary => {
+    const launches = launchCollection.launches.map((launchSummary, index) => {
       const showLaunchInfo =
         launchSummary.flight_number === launchInfo.flight_number;
       return (
         <Launch
-          key={launchSummary.flight_number}
           {...{
             onLaunchClick: this.onLaunchInfoClick,
             isLaunchInfoOpen,
             launchInfo: showLaunchInfo ? launchInfo : {},
-            key: launchSummary.launch_id,
+            key: `${launchSummary.flight_number}-${index}`,
             launch: launchSummary
           }}
         />
@@ -73,7 +71,7 @@ class LaunchesView extends Component {
     return (
       <div>
         <MasterLayout
-          pageNamne="launches"
+          pageName="launches"
           renderBody={() => (
             <div>
               <h2> SpaceX launches </h2>

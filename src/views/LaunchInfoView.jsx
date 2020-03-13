@@ -8,7 +8,14 @@ function Launch({ onLaunchClick, launch, launchInfo, isLaunchInfoOpen }) {
   const rocketId = rocket && rocket.rocket_id;
   return (
     <li>
-      <h2 onClick={() => onLaunchClick(flightNumber)}>{launch.mission_name}</h2>
+      <h2
+        style={{
+          cursor: "pointer"
+        }}
+        onClick={() => onLaunchClick(flightNumber)}
+      >
+        {launch.mission_name}
+      </h2>
       <div> Flight Number: {launch.flight_number} </div>
       {isLaunchInfoOpen && !_isEmpty(launchInfo) && (
         <div>
@@ -32,7 +39,6 @@ Launch.propTypes = {
     flight_number: PropTypes.number
   }).isRequired,
   onLaunchClick: PropTypes.func.isRequired,
-  launchInfo: PropTypes.string.isRequired,
   isLaunchInfoOpen: PropTypes.bool.isRequired
 };
 

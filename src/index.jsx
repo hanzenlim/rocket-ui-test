@@ -8,7 +8,7 @@ import "styles/base/_main.sass"; // Global styles
 import "styles/base/_common.sass"; // Global styles
 import "styles/_style.sass"; // Css-module styles
 
-import store from "./stores/Root.js";
+import store from "./stores/Root";
 
 const renderApp = Component => {
   ReactDOM.render(

@@ -5,7 +5,7 @@ import Layout from "./Layout";
 
 const menu = Navigation();
 
-function MasterLayoutz({ renderBody, pageName }) {
+function MasterLayout({ renderBody, pageName }) {
   const layoutProps = {
     menu,
     pageName
@@ -23,4 +23,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MasterLayoutz);
+)(MasterLayout);
