@@ -1,7 +1,9 @@
-import { ACTIONS } from '../actions/Launches';
+import { ACTIONS } from "../actions/Launches";
 
 const initialState = {
   launches: [],
+  launchInfo: {},
+  launchInfoFetching: false,
   fetching: false
 };
 
@@ -14,8 +16,19 @@ const actionHandlers = {
     ...state,
     fetching: false,
     launches: [...state.launches, ...action.payload.launches]
+  }),
+  [ACTIONS.REQUEST_LAUNCH_INFO]: ({ state }) => ({
+    ...state,
+    launchInfoFetching: true
+  }),
+  [ACTIONS.RECEIVE_LAUNCH_INFO]: ({ state, action }) => ({
+    ...state,
+    launchInfoFetching: false,
+    launchInfo: { ...state.launchInfo, ...action.payload.launchInfo }
   })
 };
 
 export default (state = initialState, action) =>
-  actionHandlers[action.type] ? actionHandlers[action.type]({ state, action }) : state;
+  actionHandlers[action.type]
+    ? actionHandlers[action.type]({ state, action })
+    : state;
