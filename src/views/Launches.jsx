@@ -1,16 +1,48 @@
-import React, { Component } from 'react';
-import ConnectedView from './ConnectedView';
-import {fetchLaunchesIfNeeded} from "../actions/Launches";
-import Launch from '../components/Launch';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { fetchLaunchesIfNeeded, fetchLaunchInfo } from "../actions/Launches";
+import Launch from "../components/Launch";
+import MasterLayout from "./MasterLayout";
 
 class LaunchesView extends Component {
+  constructor() {
+    super();
+    this.onLaunchInfoClick = this.onLaunchInfoClick.bind(this);
+  }
+
+  state = {
+    isLaunchInfoOpen: false
+  };
+
   componentDidMount() {
     const { dispatch, launchesCollection } = this.props;
     fetchLaunchesIfNeeded({ dispatch, launchesCollection });
   }
 
+  onLaunchInfoClick(flightNumber) {
+    const { launchInfo = {} } = this.props.launchCollection;
+
+    // if the flight number that was clicked is already open, then close the view.
+    if (flightNumber === launchInfo.flight_number) {
+      this.setState({
+        isLaunchInfoOpen: !this.state.isLaunchInfoOpen
+      });
+      this.toggleLaunchInfo();
+
+      return;
+    }
+
+    const { dispatch } = this.props;
+    fetchLaunchInfo(dispatch, flightNumber);
+    this.setState({
+      isLaunchInfoOpen: true
+    });
+  }
+
   getContent() {
     const { launchCollection } = this.props;
+    const { launchInfo } = launchCollection;
+    const { isLaunchInfoOpen } = this.state;
 
     if (!launchCollection || launchCollection.fetching) {
       return <div> LOADING </div>;
@@ -20,19 +52,21 @@ class LaunchesView extends Component {
       return <div> NO DATA </div>;
     }
 
-    let launches = [];
-
-    for (let i = 0; i < launchCollection.launches.length; i++) {
-      const launch = launchCollection.launches[i];
-
-      launches.push(
-        <Launch {...{
-          key: launch.launch_id,
-          launch
-        }} />
-
-      )
-    }
+    const launches = launchCollection.launches.map(launchSummary => {
+      const showLaunchInfo =
+        launchSummary.flight_number === launchInfo.flight_number;
+      return (
+        <Launch
+          {...{
+            onLaunchClick: this.onLaunchInfoClick,
+            isLaunchInfoOpen,
+            launchInfo: showLaunchInfo ? launchInfo : {},
+            key: launchSummary.launch_id,
+            launch: launchSummary
+          }}
+        />
+      );
+    });
 
     return <ul>{launches}</ul>;
   }
@@ -40,11 +74,27 @@ class LaunchesView extends Component {
   render() {
     return (
       <div>
-        <h2> SpaceX launches </h2>
-        {this.getContent()}
+        <MasterLayout
+          pageNamne="launches"
+          renderBody={() => (
+            <div>
+              <h2> SpaceX launches </h2>
+              {this.getContent()}
+            </div>
+          )}
+        />
       </div>
     );
   }
 }
 
-export default ConnectedView(LaunchesView, 'launches');
+const mapStateToProps = state => state;
+
+const mapDispatchToProps = dispatch => ({
+  dispatch
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LaunchesView);
