@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchLaunchesIfNeeded, fetchLaunchInfo } from "../actions/Launches";
-import Launch from "../components/Launch";
-import MasterLayout from "./MasterLayout";
+import Launch from "./LaunchInfoView";
+import MasterLayout from "../components/MasterLayout";
 
 class LaunchesView extends Component {
   constructor() {
@@ -34,9 +34,6 @@ class LaunchesView extends Component {
 
     const { dispatch } = this.props;
     fetchLaunchInfo(dispatch, flightNumber);
-    this.setState({
-      isLaunchInfoOpen: true
-    });
   }
 
   getContent() {
@@ -57,6 +54,7 @@ class LaunchesView extends Component {
         launchSummary.flight_number === launchInfo.flight_number;
       return (
         <Launch
+          key={launchSummary.flight_number}
           {...{
             onLaunchClick: this.onLaunchInfoClick,
             isLaunchInfoOpen,
